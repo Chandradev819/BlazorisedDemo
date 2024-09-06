@@ -1,0 +1,44 @@
+﻿@page "/counter"
+@rendermode InteractiveServer
+@using System.Globalization
+@using Blazorise
+@using Blazorise.DataGrid
+
+<DataGrid TItem="Employee"
+          Data="@employeeList"
+          @bind-SelectedRow="@selectedEmployee"
+          PageSize="2"
+          ShowPager
+          Responsive>
+    <DataGridCommandColumn HeaderCellClass="custom-header" />
+    <DataGridColumn Field="@nameof(Employee.Id)" Caption="#" Sortable="false" HeaderCellClass="custom-header" />
+    <DataGridColumn Field="@nameof(Employee.FirstName)" Caption="First Name" Editable HeaderCellClass="custom-header" />
+    <DataGridColumn Field="@nameof(Employee.LastName)" Caption="Last Name" Editable HeaderCellClass="custom-header" />
+    <DataGridColumn Field="@nameof(Employee.Email)" Caption="Email" Editable HeaderCellClass="custom-header" />
+    <DataGridColumn Field="@nameof(Employee.Salary)" Caption="Salary" DisplayFormat="{0:C}" DisplayFormatProvider="@CultureInfo.GetCultureInfo("en-US")" Editable HeaderCellClass="custom-header">
+        <EditTemplate>
+            <NumericEdit TValue="decimal" Value="@((decimal)context.CellValue)" ValueChanged="@(v => context.CellValue = v)" />
+        </EditTemplate>
+    </DataGridColumn>
+</DataGrid>
+
+<style>
+    .custom-header {
+        background-color: #4CAF50 !important; /* Ensures the background color is applied */
+        color: white !important; /* Ensures the text color is applied */
+        font-weight: bold !important; /* Ensures the font weight is applied */
+        text-align: center !important; /* Ensures the text alignment is applied */
+    }
+</style>
+
+@code {
+    [Inject]
+    public EmployeeData EmployeeData { get; set; }
+    private List<Employee> employeeList;
+    private Employee selectedEmployee;
+
+    protected override async Task OnInitializedAsync()
+    {
+        employeeList = await EmployeeData.GetDataAsync();
+    }
+}

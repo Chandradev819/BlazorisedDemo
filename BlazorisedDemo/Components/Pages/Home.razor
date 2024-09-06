@@ -1,0 +1,59 @@
+﻿@page "/"
+@page "/cart"
+@using System.Globalization
+@using Blazorise
+@using Blazorise.DataGrid
+
+@code {
+    private List<CartItem> Model { get; set; }
+    private long TotalTests => Model.Sum(item => item.TotalTests);
+    private decimal Total => Model.Sum(item => item.Total);
+
+    protected override void OnInitialized()
+    {
+        Model = new List<CartItem>
+        {
+            new CartItem { Region = "North", TestType = "Type A", TotalTests = 100, ItemPrice = 5.00m },
+            new CartItem { Region = "South", TestType = "Type B", TotalTests = 200, ItemPrice = 10.00m },
+            new CartItem { Region = "East", TestType = "Type C", TotalTests = 150, ItemPrice = 7.50m }
+        };
+    }
+
+    private void UpdateCartItem(CartItem item)
+    {
+        // Handle the update logic here
+    }
+
+    private void RemoveCartItem(CartItem item)
+    {
+        Model.Remove(item);
+    }
+}
+
+<DataGrid TItem="CartItem" Data="@Model" Editable="true"  Sortable="true" Resizable="true">
+    <DataGridColumns>
+        <DataGridColumn Field="@nameof(CartItem.Region)" Caption="Region"  />
+        <DataGridColumn Field="@nameof(CartItem.TestType)" Caption="Test Type"  />
+        <DataGridNumericColumn Field="@nameof(CartItem.TotalTests)" Caption="Quantity" >
+           @*  <FooterTemplate>
+                @TotalTests.ToString("n0")
+            </FooterTemplate>
+            <CellTemplate>
+                <div>@context.TotalTests.ToString("n0")</div>
+            </CellTemplate> *@
+        </DataGridNumericColumn>
+        <DataGridColumn Field="@nameof(CartItem.ItemPrice)" Caption="Unit Price"  />
+        <DataGridNumericColumn Field="@nameof(CartItem.Total)" Caption="Price" >
+          @*   <CellTemplate>
+                @context.Total.ToString("C", new CultureInfo("en-US"))
+            </CellTemplate>
+            <FooterTemplate>
+                @Total.ToString("C", new CultureInfo("en-US"))
+            </FooterTemplate> *@
+        </DataGridNumericColumn>
+        <DataGridCommandColumn Width="230px" Caption="Remove from Cart">
+          @*   <DeleteCommand> @<Icon Name="delete" /> </DeleteCommand> *@
+        </DataGridCommandColumn>
+    </DataGridColumns>
+</DataGrid>
+
